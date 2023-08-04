@@ -1,0 +1,15 @@
+{
+  "name": "npm-script-manager",
+  "version": "1.0.0",
+  "description": "",
+  "main": "",
+  "files": [
+    "bin"
+  ],
+  "bin": {
+    "nr": "./bin/index.js"
+  },
+  "keywords": [],
+  "author": "tangqiangit",
+  "license": "MIT"
+}
