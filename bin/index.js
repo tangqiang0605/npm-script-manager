@@ -3,27 +3,9 @@
 const path = require('node:path')
 const fs = require('node:fs')
 const { exec } = require('node:child_process')
-const command = process.argv[2]
 
-// console.log(process.argv)
+let limit = 5;
 
-const config = JSON.parse(
-  fs.readFileSync(path.resolve(process.cwd(), 'package.json'), 'utf-8'),
-)
-const fileName = config['script']
-const configScripts = config['scripts']
-
-const scripts = Object.assign(
-  configScripts,
-  require(path.resolve(process.cwd(), fileName)),
-)
-
-if (!scripts[command]) {
-  console.log('找不到脚本' + command)
-  return;
-}
-const commands =
-  typeof scripts[command] == 'string' ? [scripts[command]] : scripts[command]
 const execPro = (command) => {
   return new Promise((resolve, reject) => {
     exec(command, (err, stdout, stderr) => {
@@ -37,25 +19,51 @@ const execPro = (command) => {
   })
 }
 
-async function execCommandsQueue(commands) {
-  let result = []
-  const execCommand = async () => {
-    try {
-      const res = await execPro(commands.shift())
-      result.push({ state: 'fulfilled', value: res })
-    } catch (err) {
-      result.push({ state: 'rejected', value: err })
-    }
-    if (commands.length) {
-      await execCommand()
-    }
-    return
+// 获取脚本
+function entryScript() {
+  const script = process.argv[2]
+  const config = JSON.parse(
+    fs.readFileSync(path.resolve(process.cwd(), 'package.json'), 'utf-8'),
+  )
+  const configScripts = config['scripts']
+  const fileName = config['script']
+  const scripts = Object.assign(
+    configScripts,
+    require(path.resolve(process.cwd(), fileName)),
+  )
+  if (!scripts[script]) {
+    console.log('找不到脚本' + script)
+    return;
   }
-
-  await execCommand()
-  return result
+  const command = scripts[script]
+  runScripts(command)
 }
 
-execCommandsQueue(commands).then((res) => {
-  // console.log(res)
-})
+async function runScripts(scripts) {
+  // 处理scripts
+  if (typeof scripts === 'string') {
+    await execPro(scripts)
+    return
+  } else if (Array.isArray(scripts)) {
+    runScriptArr(scripts)
+  } else if (typeof scripts === 'object') {
+    await runScriptArr(scripts.scripts || [], scripts.async)
+  } else {
+    console.log('脚本的scripts属性类型错误')
+    return
+  }
+}
+
+async function runScriptArr(arr, async = false) {
+  if (async) {
+    for (let command of arr) {
+      runScripts(command)
+    }
+  } else {
+    for (let command of arr) {
+      await runScripts(command)
+    }
+  }
+}
+
+entryScript()
