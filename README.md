@@ -1,72 +1,92 @@
-This package is used to enhance scripts in your package.json:
+This package enhances the functionality of scripts in your package.json file:
 
-1. Extract scripts from packageJSON to make your packageJSON look less bulky
+1. It extracts scripts from packageJSON, reducing the overall size of the packageJSON file.
 
-2. Replace 'npm run script' with 'nr script'
+2. It replaces the usage of 'npm run script' with the shorthand 'nr script'.
 
-3. Replacing static scripts with dynamic scripts
+3. It enables the substitution of static scripts with dynamic scripts.
 
-4. You can add comments to your script
+4. It allows you to add comments to your scripts.
 
-5. You can group your scripts
+5. It provides the ability to group your scripts.
 
-6. A script can execute multiple scripts and supports synchronous, asynchronous, and hybrid execution.
+6. It supports the execution of multiple scripts in a single script, with support for synchronous, asynchronous, and hybrid execution.
 
-7. Scripts can automatically change parameters based on the environment
+7. It enables automatic parameter changes in scripts based on the environment.
 
-8. A script can have a greater impact
+8. It allows scripts to have a more significant impact.
+
+## Installation
+
+```sh
+npm i npm-script-manager --save-dev
+```
 
 ## Usage
-Specify a file as your storage script file through the 'script' field in package.json:
+
+To specify a file as your storage script in package.json, use the 'script' field:
+
 ```
 // package.json
 {
-  "script":"./scripts/index.js"
+  "script": "./scripts/index.js"
 }
 ```
-A script file looks similar:
-```
-module.exports={
-  "time":`echo ${new Date().toString()}`
+
+A script file looks like this:
+
+```javascript
+module.exports = {
+  "time": `echo ${new Date().toString()}`
 }
 ```
-And run your script:
-```sh
+
+You can then run your script using the following command:
+
+```shell
 nr time
 ```
 
 The value of an attribute can also be an array, which will be executed sequentially:
-```cjs
-const time=new Date()
-module.exports={
-  "time":[`echo ${time.getFullYear()}`,`echo ${time.getMonth()+1}`,`echo ${time.getDay()}`]
+
+```javascript
+const time = new Date();
+module.exports = {
+  "time": [
+    `echo ${time.getFullYear()}`,
+    `echo ${time.getMonth() + 1}`,
+    `echo ${time.getDay()}`
+  ]
 }
 ```
 
-The value of an attribute can also be an object, and you can make it execute asynchronously by setting the value of async:
-```cjs
-module.exports={
-  "run-async":{
-    async:true,
-    scripts:["echo 1","echo 2","echo 3"]
+The value of an attribute can also be an object, and you can make it execute asynchronously by setting the value of the 'async' property:
+
+```javascript
+module.exports = {
+  "run-async": {
+    "async": true,
+    "scripts": ["echo 1", "echo 2", "echo 3"]
   }
 }
 ```
-If the async attribute is omitted, it defaults to false.
 
-The scripts properties and arrays of objects support nesting:
-```cjs
-module.exports={
-  "run-async":{
-    async:true,
-    scripts:[
+If the 'async' property is omitted, it defaults to false.
+
+The 'scripts' property and arrays of objects support nesting:
+
+```javascript
+module.exports = {
+  "run-async": {
+    "async": true,
+    "scripts": [
       "echo 1",
-      ["echo 2","echo 3"]
+      ["echo 2", "echo 3"],
       {
-        async:true,
-        scripts:["echo 4","echo 5","echo 6"]
+        "async": true,
+        "scripts": ["echo 4", "echo 5", "echo 6"]
       }
-  ]
+    ]
   }
 }
 ```
