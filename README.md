@@ -73,6 +73,21 @@ module.exports = {
 
 If the 'async' property is omitted, it defaults to false.
 
+You can use the `--limit` parameter to restrict the number of concurrently running scripts:
+```shell
+nr echos --limit 5
+```
+
+The file:
+
+```javascript
+const echos = []
+for (let i = 0; i < 1000; i++) {
+  echos.push(`echo test${i}`)
+}
+module.exports = { echos }
+```
+
 The 'scripts' property and arrays of objects support nesting:
 
 ```javascript
