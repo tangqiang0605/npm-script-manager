@@ -1,15 +1,16 @@
 {
   "name": "npm-script-manager",
   "version": "1.0.0",
-  "description": "",
-  "main": "",
+  "description": "enhance your npm script in your package.json",
   "files": [
     "bin"
   ],
   "bin": {
     "nr": "./bin/index.js"
   },
-  "keywords": [],
+  "keywords": [
+    "script"
+  ],
   "author": "tangqiangit",
   "license": "MIT"
 }

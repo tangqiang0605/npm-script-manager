@@ -19,8 +19,8 @@ const execPro = (command) => {
   })
 }
 
-// 获取脚本
 function entryScript() {
+  // 处理脚本
   const script = process.argv[2]
   const config = JSON.parse(
     fs.readFileSync(path.resolve(process.cwd(), 'package.json'), 'utf-8'),
@@ -40,7 +40,7 @@ function entryScript() {
 }
 
 async function runScripts(scripts) {
-  // 处理scripts
+  // 处理属性scripts
   if (typeof scripts === 'string') {
     await execPro(scripts)
     return
@@ -55,6 +55,7 @@ async function runScripts(scripts) {
 }
 
 async function runScriptArr(arr, async = false) {
+  // 控制异步执行
   if (async) {
     for (let command of arr) {
       runScripts(command)
