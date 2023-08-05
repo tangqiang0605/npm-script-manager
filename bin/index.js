@@ -47,22 +47,25 @@ function entryScript() {
   // 处理脚本
   const script = process.argv[2]
   const argvs = getArgvs()
-  console.log(argvs)
   if (argvs.limit) {
     limit = Number(argvs.limit)
   }
-  console.log(limit)
   const config = JSON.parse(
     fs.readFileSync(path.resolve(process.cwd(), 'package.json'), 'utf-8'),
   )
-  const configScripts = config['scripts']
+  const configScripts = config['scripts'] || {}
   const fileName = config['script']
+  if (!fileName) {
+    console.warn('scirpt字段为空')
+  } else if (!fs.existsSync(fileName)) {
+    console.warn('script指定文件不存在')
+  }
   const scripts = Object.assign(
     configScripts,
     require(path.resolve(process.cwd(), fileName)),
   )
   if (!scripts[script]) {
-    console.log('找不到脚本' + script)
+    console.warn('找不到脚本' + script)
     return;
   }
   const command = scripts[script]
@@ -82,7 +85,7 @@ async function runScripts(scripts) {
   } else if (typeof scripts === 'object') {
     await runScriptArr(scripts.scripts || [], scripts.async)
   } else {
-    console.log('脚本的scripts属性类型错误', scripts)
+    console.warn('脚本的scripts属性类型错误', scripts)
     return
   }
 }
